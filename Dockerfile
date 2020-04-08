@@ -7,7 +7,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 RUN bundle install
-RUN ls
 
 EXPOSE 3000
 
