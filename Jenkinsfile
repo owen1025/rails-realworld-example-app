@@ -1,15 +1,27 @@
 pipeline {
+    agent any
+
     stages {
-        stage('scm') {
-            
+        stage('Pipeline start') {
+            steps {
+                sendNotification('STARTED')
+            }
         }
 
-        stage('build') {
+        stage('Pipeline end') {
+            options {
+                skipDefaultCheckout()
+            }
 
+            steps {
+                print "End stage"
+            }
         }
+    }
 
-        stage('deploy') {
-
+    post {
+        always {
+            cleanWs()
         }
     }
 }
