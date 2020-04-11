@@ -25,25 +25,25 @@ pipeline {
             }
         }
 
-        // stage('Build') {
-        //     options {
-        //         skipDefaultCheckout()
-        //     }
-        //
-        //     steps {
-        //         script {
-        //             if (!fileExists('Dockerfile')) {
-        //                 error "Dockerfile not found"
-        //             }
-        //
-        //             try {
-        //                 def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
-        //             } catch (e) {
-        //                 error e
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build') {
+            options {
+                skipDefaultCheckout()
+            }
+
+            steps {
+                script {
+                    if (!fileExists('Dockerfile')) {
+                        error "Dockerfile not found"
+                    }
+
+                    try {
+                        def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
+                    } catch (e) {
+                        error e
+                    }
+                }
+            }
+        }
 
         // stage('Push') {
         //     steps {
