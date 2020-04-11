@@ -49,6 +49,23 @@ pipeline {
             }
         }
 
+        stage('deploy') {
+            options {
+                skipDefaultCheckout()
+            }
+
+            script {
+                try {
+                    timeout(time: 3, unit: 'MINUTES') {
+                        sh "kubectl set image deployment $SERVICE_NAME $SERVICE_NAME=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                    }
+                } catch (e) {
+                    sh "kubectl rollout undo deployments $SERVICE_NAME"
+                    error e
+                }
+            }
+        }
+
         stage('Pipeline end') {
             options {
                 skipDefaultCheckout()
