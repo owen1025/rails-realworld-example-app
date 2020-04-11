@@ -52,3 +52,4 @@ Requests are authenticated using the `Authorization` header with a valid JWT. Th
 
 Devise only requires an email and password upon registration. To allow additional parameters on sign up, we use [application_controller#configure_permitted_parameters](https://github.com/gothinkster/rails-realworld-example-app/blob/master/app/controllers/application_controller.rb#L14) to allow additional parameters.
 
+
