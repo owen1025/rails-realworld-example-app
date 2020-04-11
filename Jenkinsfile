@@ -37,7 +37,8 @@ pipeline {
                     }
 
                     try {
-                        def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
+                        // def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
+                        sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
                     } catch (e) {
                         error e
                     }
@@ -72,6 +73,12 @@ pipeline {
             steps {
                 print "End stage"
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
