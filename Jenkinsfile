@@ -25,44 +25,44 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            options {
-                skipDefaultCheckout()
-            }
-            
-            steps {
-                script {
-                    if (!fileExists('Dockerfile')) {
-                        error "Dockerfile not found"
-                    }
+        // stage('Build') {
+        //     options {
+        //         skipDefaultCheckout()
+        //     }
+        //
+        //     steps {
+        //         script {
+        //             if (!fileExists('Dockerfile')) {
+        //                 error "Dockerfile not found"
+        //             }
+        //
+        //             try {
+        //                 def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
+        //             } catch (e) {
+        //                 error e
+        //             }
+        //         }
+        //     }
+        // }
 
-                    try {
-                        def buildImage = docker.build("$SERVICE_NAME:$GIT_SHORT_HASH", "--no-cache .")
-                    } catch (e) {
-                        error e
-                    }
-                }
-            }
-        }
-
-        stage('Push') {
-            steps {
-                script {
-                    try {
-                        sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                        sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-
-                        print "$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH Image push success"
-                    } catch (e) {
-                        error e
-                    } finally {
-                        // build 및 registry에 push 이후 Local host의 Docker image 삭제
-                        sh "docker rmi -f $SERVICE_NAME:$GIT_SHORT_HASH"
-                        sh "docker rmi -f $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                    }
-                }
-            }
-        }
+        // stage('Push') {
+        //     steps {
+        //         script {
+        //             try {
+        //                 sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+        //                 sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+        //
+        //                 print "$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH Image push success"
+        //             } catch (e) {
+        //                 error e
+        //             } finally {
+        //                 // build 및 registry에 push 이후 Local host의 Docker image 삭제
+        //                 sh "docker rmi -f $SERVICE_NAME:$GIT_SHORT_HASH"
+        //                 sh "docker rmi -f $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Pipeline end') {
             options {
@@ -72,12 +72,6 @@ pipeline {
             steps {
                 print "End stage"
             }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
         }
     }
 }
