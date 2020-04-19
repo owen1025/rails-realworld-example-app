@@ -10,14 +10,13 @@ podTemplate(label: 'test',
 
 {
     node('test') {
-        def myRepo = checkout scm
-        def gitCommit = myRepo.GIT_COMMIT
-        def gitBranch = myRepo.GIT_BRANCH
-        def GIT_SHORT_HASH = "${gitCommit[0..7]}"
-        def SERVICE_NAME = "rails-realworld-example"
-        def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
-
-        stage('configure') {
+        stage('checkout') {
+            def myRepo = checkout scm
+            def gitCommit = myRepo.GIT_COMMIT
+            def gitBranch = myRepo.GIT_BRANCH
+            def GIT_SHORT_HASH = "${gitCommit[0..7]}"
+            def SERVICE_NAME = "rails-realworld-example"
+            def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
             sh "ls -al"
             print "SERVICE_NAME : $SERVICE_NAME"
             print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
@@ -39,7 +38,7 @@ podTemplate(label: 'test',
 
         stage('deploy') {
             container('kubectl') {
-                sh "kubectl set image deployment/$SERVICE_NAME rails=$SERVICE_NAME=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH -n default --record"
+                sh "kubectl set image deployment/$SERVICE_NAME rails=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH --record"
             }
         }
     }
