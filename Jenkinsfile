@@ -22,6 +22,14 @@ pipeline {
                     print "SERVICE_NAME : $SERVICE_NAME"
                     print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
                 }
+                
+                podTemplate(label: label, containers: [
+                    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+                    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
+                ],
+                volumes: [
+                    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+                ]) 
             }
         }
 
@@ -36,12 +44,13 @@ pipeline {
                         error "Dockerfile not found"
                     }
                     try {
-                        container('jnlp') {
+                        container('docker') {
                             sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
                             sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
                             sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
                         }
-                    } catch (e) {
+                    }
+                    catch (e) {
                         error e
                     }
                 }
@@ -57,7 +66,9 @@ pipeline {
                 script {
                     try {
                         timeout(time: 3, unit: 'MINUTES') {
-                            sh "kubectl set image deployment $SERVICE_NAME $SERVICE_NAME=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                            container('kubectl') {
+                                sh "kubectl set image deployment $SERVICE_NAME $SERVICE_NAME=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                            }
                         }
                     } catch (e) {
                         sh "kubectl rollout undo deployments $SERVICE_NAME"
