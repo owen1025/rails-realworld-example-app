@@ -29,7 +29,7 @@ podTemplate(label: 'test',
             print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
         }
 
-        stage('build') {
+        stage('build and push') {
             container('docker') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                 credentialsId: 'dockerhub',
@@ -44,8 +44,13 @@ podTemplate(label: 'test',
         }
 
         stage('deploy') {
-            container('kubectl') {
-                sh "kubectl set image deployment/$SERVICE_NAME rails=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH --record"
+            try {
+                container('kubectl') {
+                    sh "kubectl set image deployment/$SERVICE_NAME rails=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH --record"
+                }
+            } catch(exc) {
+                sh "kubectl rollout undo deployments $SERVICE_NAME"
+                print "kubectl change image failed"
             }
         }
     }
