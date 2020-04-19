@@ -10,21 +10,17 @@ podTemplate(label: 'test',
 
 {
     node('test') {
-        def GIT_SHORT_HASH = sh(returnStdout: true, script: 'git rev-parse HEAD').trim().take(8)
         def SERVICE_NAME = "rails-realworld-example"
         def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
 
         stage('configure') {
             print "SERVICE_NAME : $SERVICE_NAME"
-            print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
         }
 
         stage('build') {
             container('docker') {
-                // sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
-                // sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                // sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                sh "docker ps -a"
+                sh "docker build -t $DOCKER_REGISTRY_IMAGE_NAME:stable --no-cache ."
+                sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
             }
         }
     }
