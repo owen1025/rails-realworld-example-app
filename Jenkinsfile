@@ -10,9 +10,14 @@ podTemplate(label: 'test',
 
 {
     node('test') {
-        def GIT_SHORT_HASH = "${env.GIT_COMMIT}".substring(0, 7)
+        def GIT_SHORT_HASH = sh(returnStdout: true, script: 'git rev-parse HEAD').trim().take(8)
         def SERVICE_NAME = "rails-realworld-example"
         def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
+
+        stage('configure') {
+            print "SERVICE_NAME : $SERVICE_NAME"
+            print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
+        }
 
         stage('build') {
             container('docker') {
