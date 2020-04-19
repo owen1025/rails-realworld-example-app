@@ -10,13 +10,20 @@ podTemplate(label: 'test',
 
 {
     node('test') {
+        def myRepo
+        def gitCommit
+        def gitBranch
+        def GIT_SHORT_HASH
+        def SERVICE_NAME
+        def DOCKER_REGISTRY_IMAGE_NAME
+        
         stage('checkout') {
-            def myRepo = checkout scm
-            def gitCommit = myRepo.GIT_COMMIT
-            def gitBranch = myRepo.GIT_BRANCH
-            def GIT_SHORT_HASH = "${gitCommit[0..7]}"
-            def SERVICE_NAME = "rails-realworld-example"
-            def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
+            myRepo = checkout scm
+            gitCommit = myRepo.GIT_COMMIT
+            gitBranch = myRepo.GIT_BRANCH
+            GIT_SHORT_HASH = "${gitCommit[0..7]}"
+            SERVICE_NAME = "rails-realworld-example"
+            DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
             sh "ls -al"
             print "SERVICE_NAME : $SERVICE_NAME"
             print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
