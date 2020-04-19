@@ -23,7 +23,7 @@ pipeline {
                     print "GIT_SHORT_HASH : $GIT_SHORT_HASH"
                 }
                 
-                podTemplate(label: label, containers: [
+                podTemplate(label: 'test', containers: [
                     containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                     containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
                 ],
