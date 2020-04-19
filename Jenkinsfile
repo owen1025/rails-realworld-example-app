@@ -10,9 +10,9 @@ podTemplate(label: 'test',
 
 {
     node('test') {
-        // def GIT_SHORT_HASH = "${env.GIT_COMMIT}".substring(0, 7)
-        // def SERVICE_NAME = "rails-realworld-example"
-        // def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
+        def GIT_SHORT_HASH = "${env.GIT_COMMIT}".substring(0, 7)
+        def SERVICE_NAME = "rails-realworld-example"
+        def DOCKER_REGISTRY_IMAGE_NAME = "myartame/$SERVICE_NAME"
 
         stage('build') {
             container('docker') {
