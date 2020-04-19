@@ -26,9 +26,8 @@ podTemplate(label: 'test',
         stage('build') {
             container('docker') {
                 sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
-                // sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                // sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                sh "docker ps -a"
+                sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
             }
         }
     }
