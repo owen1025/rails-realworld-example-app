@@ -35,7 +35,6 @@ pipeline {
                     if (!fileExists('Dockerfile')) {
                         error "Dockerfile not found"
                     }
-
                     try {
                         container('jnlp') {
                             sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
