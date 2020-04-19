@@ -25,9 +25,21 @@ podTemplate(label: 'test',
 
         stage('build') {
             container('docker') {
-                sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
-                sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
-                sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                credentialsId: 'dockerhub',
+                usernameVariable: 'DOCKER_HUB_USER',
+                passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+                    sh "docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}"
+                    sh "docker build -t $SERVICE_NAME:$GIT_SHORT_HASH --no-cache ."
+                    sh "docker tag $SERVICE_NAME:$GIT_SHORT_HASH $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                    sh "docker push $DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH"
+                }
+            }
+        }
+
+        stage('deploy') {
+            container('kubectl') {
+                sh "kubectl get pods -A"
             }
         }
     }
