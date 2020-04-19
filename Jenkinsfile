@@ -37,10 +37,10 @@ podTemplate(label: 'test',
             }
         }
 
-        // stage('deploy') {
-        //     container('kubectl') {
-        //         sh "kubectl get pods -A"
-        //     }
-        // }
+        stage('deploy') {
+            container('kubectl') {
+                sh "kubectl set image deployment/$SERVICE_NAME rails=$SERVICE_NAME=$DOCKER_REGISTRY_IMAGE_NAME:$GIT_SHORT_HASH -n default --record"
+            }
+        }
     }
 }
