@@ -37,10 +37,10 @@ podTemplate(label: 'test',
             }
         }
 
-        stage('deploy') {
-            container('kubectl') {
-                sh "kubectl get pods -A"
-            }
-        }
+        // stage('deploy') {
+        //     container('kubectl') {
+        //         sh "kubectl get pods -A"
+        //     }
+        // }
     }
 }
